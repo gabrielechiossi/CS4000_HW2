@@ -10,9 +10,9 @@ using namespace std;
 class CircleTheWordSolver {
  public:
   vector<pair<int, int> > word_locations(vector<vector<char> > &puzzle, vector<string> &wordlist);
-  vector<pair<int, int> > find(vector<vector<char> > &puzzle, string temp);
-  vector<pair<int, int> > move(vector<vector<char> > &puzzle, string temp, int x, int y);
-  
+  pair<int, int> findLetter(vector<vector<char> > &puzzle, string temp);
+  pair<int, int> moveLetter(vector<vector<char> > &puzzle, string temp, int x, int y);
+
 };
 #endif
 
