@@ -6,12 +6,10 @@ using namespace std;
 
 int main() {
   int n, m;
-  cout << "Input nxn" << endl;
   cin >> n;
   cin >> m;
   vector<vector<char> > puzzle;
   puzzle.resize(n);
-  cout << "Input letter" << endl;
   for (size_t i=0;i<n;i++) {
     puzzle[i].resize(m);
     for (size_t j=0;j<m;j++) {
