@@ -4,13 +4,19 @@
 #include <algorithm>
 #include <string>
 #include "CircleTheWordSolver.h"
+#include "omp.h"
 using namespace std;
 
 vector<pair<int, int> > CircleTheWordSolver::word_locations(vector<vector<char> > &puzzle, vector<string> &wordlist){
     vector<pair<int, int> > prov;
+    #pragma omp parallel for num_threads(4)
        for(int i = 0; i < wordlist.size(); i++){
-              string temp = wordlist[i];
-              prov.push_back(findLetter(puzzle, temp));
+              #pragma omp critical
+              {
+                     string temp = wordlist[i];
+                     prov.push_back(findLetter(puzzle, temp));
+              }
+              
        }
        return prov;
 }
@@ -18,6 +24,7 @@ vector<pair<int, int> > CircleTheWordSolver::word_locations(vector<vector<char> 
 pair<int, int> CircleTheWordSolver::findLetter(vector<vector<char> > &puzzle, string temp){
        int c = 0;
        pair<int, int> position;
+       #pragma omp parallel for num_threads(4)
        for(int y = 0; y < puzzle.size(); y++){
               for(int x = 0; x < puzzle.size(); x++){
                      if(temp[c] == puzzle[x][y]){

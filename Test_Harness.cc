@@ -2,6 +2,7 @@
 #include "CircleTheWordSolver.h"
 #include <vector>
 #include <string>
+#include "omp.h"
 using namespace std;
 
 int main() {

@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <vector>
 #include <algorithm>
+#include "omp.h"
 using namespace std;
 
 #ifndef DWJ_WORD_CIRCLE_DEF
