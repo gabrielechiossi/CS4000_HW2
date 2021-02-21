@@ -1,3 +1,8 @@
+/**
+ *   @file: Test_Harness.cc
+ * @author: Gabriele Chiossi
+ *   @date: 02/21/21
+ */
 #include <iostream>
 #include "CircleTheWordSolver.h"
 #include <vector>
