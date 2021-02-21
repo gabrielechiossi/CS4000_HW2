@@ -2,7 +2,8 @@
 #include "CircleTheWordSolver.h"
 #include <vector>
 #include <string>
-#include "omp.h"
+#include <array>
+#include <omp.h>
 using namespace std;
 
 int main() {
@@ -49,4 +50,5 @@ int main() {
       cout << wordlist[i] << " found at location " << locations[i].first << "," << locations[i].second << endl;
     }
   }
+  return 0;
 }
