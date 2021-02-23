@@ -77,14 +77,23 @@ vector<pair<int, int> > CircleTheWordSolver::findLetter(vector<vector<char> > &p
 
                             //this if check if the letter in the matrix corrispond to any first letter of
                             //any of the words given
-                            if(fLetter[omp_get_thread_num()][c] == puzzle[x][y]){
+                            if(fLetter[omp_get_thread_num()][c] == puzzle[y][x]){
                                    //if so we call moveLetter and check if the letter in the matrix is actally
                                    //the first letter of the words or not
                                    position[omp_get_thread_num()] = moveLetter(puzzle, words[omp_get_thread_num()][c], x , y);
                                    //if it is the first letter of the words means we found the position x and y and we save it
                                    //in arr
                                           if((position[omp_get_thread_num()].first != -1) && (position[omp_get_thread_num()].second != -1)){
-                                                 arr[omp_get_thread_num()][c] = position[omp_get_thread_num()];
+                                                 //here we check if it is the first time that a word is found if it is true it will
+                                                 //enter the first if, if the word it has been found already the program will check
+                                                 //if the x and y of the word already found are smaller than the new one found
+                                                 //if they are the value x and y remain the same but if the x and y found in another
+                                                 //location are smaller than the one previosly found they will be change to the new one
+                                                 if(arr[omp_get_thread_num()][c] == make_pair(-1, -1)){
+                                                        arr[omp_get_thread_num()][c] = position[omp_get_thread_num()];
+                                                 }else if(position[omp_get_thread_num()].first < arr[omp_get_thread_num()][c].first || (position[omp_get_thread_num()].first == arr[omp_get_thread_num()][c].first && position[omp_get_thread_num()].second < arr[omp_get_thread_num()][c].second)){
+                                                        arr[omp_get_thread_num()][c] = position[omp_get_thread_num()];
+                                                 }  
                                           } 
                             }
                      } 
@@ -94,8 +103,13 @@ vector<pair<int, int> > CircleTheWordSolver::findLetter(vector<vector<char> > &p
        for(int i = 0; i < 4; i++){
               for(int c = 0; c < wordcount; c++){
                      //we check if arr has any "found" location if so they get copy in the main 1d vector
+                     //with the same concept used before on line 92 to 96
                      if(arr[i][c] != make_pair(-1, -1)){
-                            final[c] = arr[i][c];
+                            if(final[c] == make_pair(-1, -1)){
+                                   final[c] = arr[i][c];                         
+                            }else if(arr[i][c].first < final[c].first || (arr[i][c].first == final[c].first && arr[i][c].second < final[c].second)){
+                                   final[c] = arr[i][c];
+                            }
                      }
               }  
        }
@@ -115,7 +129,7 @@ pair<int, int> CircleTheWordSolver::moveLetter(vector<vector<char> > &puzzle, st
               int counter = 1;
               if(i == 0){
                      for(int j = 1; j < l; j++){
-                            if(y+j < puzzle.size() && temp[j] == puzzle[x][y+j]){
+                            if(y+j < puzzle.size() && temp[j] == puzzle[y+j][x]){
                                    if(j == 1){
                                           posx = x;
                                           posy = y;
@@ -127,7 +141,7 @@ pair<int, int> CircleTheWordSolver::moveLetter(vector<vector<char> > &puzzle, st
                      }
               }else if(i == 1){
                      for(int j = 1; j < l; j++){
-                            if((y+j < puzzle.size() && x-j > -1) && temp[j] == puzzle[x-j][y+j]){
+                            if((y+j < puzzle.size() && x-j > -1) && temp[j] == puzzle[y+j][x-j]){
                                    if(j == 1){
                                           posx = x;
                                           posy = y;
@@ -139,7 +153,7 @@ pair<int, int> CircleTheWordSolver::moveLetter(vector<vector<char> > &puzzle, st
                      }
               }else if(i == 2){
                    for(int j = 1; j < l; j++){
-                            if(x-j > -1 && temp[j] == puzzle[x-j][y]){
+                            if(x-j > -1 && temp[j] == puzzle[y][x-j]){
                                    if(j == 1){
                                           posx = x;
                                           posy = y;
@@ -151,7 +165,7 @@ pair<int, int> CircleTheWordSolver::moveLetter(vector<vector<char> > &puzzle, st
                      }  
               }else if(i == 3){
                      for(int j = 1; j < l; j++){
-                            if((y-j > -1 && x-j > -1) && temp[j] == puzzle[x-j][y-j]){
+                            if((y-j > -1 && x-j > -1) && temp[j] == puzzle[y-j][x-j]){
                                    if(j == 1){
                                           posx = x;
                                           posy = y;
@@ -163,7 +177,7 @@ pair<int, int> CircleTheWordSolver::moveLetter(vector<vector<char> > &puzzle, st
                      }  
               }else if(i == 4){
                      for(int j = 1; j < l; j++){
-                            if(y-j > -1 && temp[j] == puzzle[x][y-j]){
+                            if(y-j > -1 && temp[j] == puzzle[y-j][x]){
                                    if(j == 1){
                                           posx = x;
                                           posy = y;
@@ -175,7 +189,7 @@ pair<int, int> CircleTheWordSolver::moveLetter(vector<vector<char> > &puzzle, st
                      }  
               }else if(i == 5){
                      for(int j = 1; j < l; j++){
-                            if((y-j > -1 && x+j < puzzle.size()) && temp[j] == puzzle[x+j][y-j]){
+                            if((y-j > -1 && x+j < puzzle.size()) && temp[j] == puzzle[y-j][x+j]){
                                    if(j == 1){
                                           posx = x;
                                           posy = y;
@@ -187,7 +201,7 @@ pair<int, int> CircleTheWordSolver::moveLetter(vector<vector<char> > &puzzle, st
                      }
               }else if(i == 6){
                     for(int j = 1; j < l; j++){
-                            if(x+j < puzzle.size() && temp[j] == puzzle[x+j][y]){
+                            if(x+j < puzzle.size() && temp[j] == puzzle[y][x+j]){
                                    if(j == 1){
                                           posx = x;
                                           posy = y;
@@ -199,7 +213,7 @@ pair<int, int> CircleTheWordSolver::moveLetter(vector<vector<char> > &puzzle, st
                      } 
               }else if(i == 7){
                      for(int j = 1; j < l; j++){
-                            if((y+j < puzzle.size() && x+j < puzzle.size()) && temp[j] == puzzle[x+j][y+j]){
+                            if((y+j < puzzle.size() && x+j < puzzle.size()) && temp[j] == puzzle[y+j][x+j]){
                                    if(j == 1){
                                           posx = x;
                                           posy = y;
@@ -211,8 +225,8 @@ pair<int, int> CircleTheWordSolver::moveLetter(vector<vector<char> > &puzzle, st
                      }
               }
               if(counter == l){
-                    initialPosition.first = posy;
-                    initialPosition.second = posx;
+                    initialPosition.first = posx;
+                    initialPosition.second = posy;
                     return initialPosition;
               }
        }
